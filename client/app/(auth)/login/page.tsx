@@ -40,7 +40,7 @@ const LoginPage = () => {
     <Card className="w-[400px]">
       <CardHeader className="text-center">
         <CardTitle className="text-xl">Welcome Back</CardTitle>
-        <CardDescription>Sign in to your account</CardDescription>
+        <CardDescription>Login to your account</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -53,7 +53,7 @@ const LoginPage = () => {
                     fill="currentColor"
                   />
                 </svg>
-                Sign in with Google
+                Login with Google
               </Button>
               <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                 <span className="relative z-10 bg-white px-2 text-muted-foreground">
@@ -98,7 +98,7 @@ const LoginPage = () => {
                   />
                 </div>
                 <Button type="submit" className="w-full">
-                  Sign in
+                  Login
                 </Button>
               </div>
               <div className="text-center text-sm">
