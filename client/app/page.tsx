@@ -24,26 +24,14 @@ export default function WelcomePage() {
           >
             <Sparkles className="h-8 w-8 text-primary" />
           </motion.div>
-          <motion.div
-            className="bg-primary/10 p-3 rounded-full"
-            animate={{
-              y: [0, -10, 0],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 0.2,
-            }}
-          >
-            <Image
-              src="/logo.png"
-              alt="logo"
-              width={56}
-              height={56}
-              className="rounded-full"
-            />
-          </motion.div>
+
+          <Image
+            src="/logo.png"
+            alt="logo"
+            width={56}
+            height={56}
+            className="rounded-lg ring-2 ring-primary ring-offset-2 ring-offset-background"
+          />
           <motion.div
             className="bg-primary/10 p-3 rounded-full"
             animate={{
