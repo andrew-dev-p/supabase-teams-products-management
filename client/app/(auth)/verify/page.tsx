@@ -70,7 +70,7 @@ const VerifyPage = () => {
 
           <Button
             onClick={() => {
-              console.log("Check");
+              router.push("/teams");
             }}
             disabled={isChecking}
             className="w-full"

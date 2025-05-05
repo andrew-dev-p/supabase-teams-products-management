@@ -21,6 +21,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
+import { useRouter } from "next/navigation";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -30,6 +31,8 @@ const loginSchema = z.object({
 type LoginSchema = z.infer<typeof loginSchema>;
 
 const LoginPage = () => {
+  const router = useRouter();
+
   const form = useForm<LoginSchema>({
     defaultValues: {
       email: "",
@@ -39,6 +42,7 @@ const LoginPage = () => {
   });
 
   const onSubmit = (data: LoginSchema) => {
+    router.push("/teams");
     console.log(data);
   };
 
