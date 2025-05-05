@@ -93,7 +93,15 @@ const LoginPage = () => {
                     name="password"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Password</FormLabel>
+                        <div className="flex items-center justify-between">
+                          <FormLabel>Password</FormLabel>
+                          <Link
+                            href="/forgot-password"
+                            className="underline underline-offset-4 text-sm text-muted-foreground"
+                          >
+                            Forgot Password?
+                          </Link>
+                        </div>
                         <FormControl>
                           <Input
                             id="password"
