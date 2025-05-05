@@ -113,14 +113,18 @@ const SignupPage = () => {
                   />
                 </div>
                 <Button
-                  disabled={signUpMutation.isPending}
                   type="submit"
                   className="w-full"
+                  disabled={signUpMutation.isPending}
                 >
-                  {signUpMutation.isPending && (
-                    <Loader className="mr-2 h-4 w-4 animate-spin" />
+                  {signUpMutation.isPending ? (
+                    <>
+                      <Loader className="mr-2 h-4 w-4 animate-spin" />
+                      Signing up...
+                    </>
+                  ) : (
+                    "Sign up"
                   )}
-                  {signUpMutation.isPending ? "Signing up..." : "Sign up"}
                 </Button>
               </div>
               <div className="text-center text-sm">

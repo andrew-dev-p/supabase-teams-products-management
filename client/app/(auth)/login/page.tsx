@@ -21,7 +21,8 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
-import { useRouter } from "next/navigation";
+import { useMutateAuth } from "@/hooks/useMutateAuth";
+import { Loader } from "lucide-react";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -31,8 +32,6 @@ const loginSchema = z.object({
 type LoginSchema = z.infer<typeof loginSchema>;
 
 const LoginPage = () => {
-  const router = useRouter();
-
   const form = useForm<LoginSchema>({
     defaultValues: {
       email: "",
@@ -41,9 +40,10 @@ const LoginPage = () => {
     resolver: zodResolver(loginSchema),
   });
 
+  const { loginMutation } = useMutateAuth();
+
   const onSubmit = (data: LoginSchema) => {
-    router.push("/teams");
-    console.log(data);
+    loginMutation.mutate(data);
   };
 
   return (
@@ -120,8 +120,19 @@ const LoginPage = () => {
                     )}
                   />
                 </div>
-                <Button type="submit" className="w-full">
-                  Login
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={loginMutation.isPending}
+                >
+                  {loginMutation.isPending ? (
+                    <>
+                      <Loader className="mr-2 h-4 w-4 animate-spin" />
+                      Logging in...
+                    </>
+                  ) : (
+                    "Login"
+                  )}
                 </Button>
               </div>
               <div className="text-center text-sm">

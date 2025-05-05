@@ -14,7 +14,7 @@ const TeamsPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="w-full max-w-3xl grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card className="w-full h-full flex flex-col">
+        <Card className="w-full h-full flex flex-col border">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <UserPlus className="h-5 w-5" />
@@ -32,7 +32,9 @@ const TeamsPage = () => {
           </CardContent>
           <CardFooter>
             <Link href="/teams/join" className="w-full">
-              <Button className="w-full">Join with Code</Button>
+              <Button className="w-full" variant="outline">
+                Join with Code
+              </Button>
             </Link>
           </CardFooter>
         </Card>
@@ -55,9 +57,7 @@ const TeamsPage = () => {
           </CardContent>
           <CardFooter>
             <Link href="/teams/create" className="w-full">
-              <Button className="w-full" variant="outline">
-                Create New Team
-              </Button>
+              <Button className="w-full">Create New Team</Button>
             </Link>
           </CardFooter>
         </Card>
