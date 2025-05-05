@@ -73,7 +73,7 @@ const LoginPage = () => {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Email</FormLabel>
+                        <FormLabel htmlFor="email">Email</FormLabel>
                         <FormControl>
                           <Input
                             id="email"
@@ -94,7 +94,7 @@ const LoginPage = () => {
                     render={({ field }) => (
                       <FormItem>
                         <div className="flex items-center justify-between">
-                          <FormLabel>Password</FormLabel>
+                          <FormLabel htmlFor="password">Password</FormLabel>
                           <Link
                             href="/forgot-password"
                             className="underline underline-offset-4 text-sm text-muted-foreground"
