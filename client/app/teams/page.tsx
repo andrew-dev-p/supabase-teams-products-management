@@ -31,7 +31,7 @@ const TeamsPage = () => {
             </p>
           </CardContent>
           <CardFooter>
-            <Link href="/join-team" className="w-full">
+            <Link href="/teams/join" className="w-full">
               <Button className="w-full">Join with Code</Button>
             </Link>
           </CardFooter>
@@ -54,7 +54,7 @@ const TeamsPage = () => {
             </p>
           </CardContent>
           <CardFooter>
-            <Link href="/create-team" className="w-full">
+            <Link href="/teams/create" className="w-full">
               <Button className="w-full" variant="outline">
                 Create New Team
               </Button>
