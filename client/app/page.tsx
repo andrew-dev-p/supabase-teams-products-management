@@ -10,7 +10,7 @@ export default function WelcomePage() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-white to-background px-4 text-center">
       <div className="space-y-12 max-w-3xl">
-        <div className="flex items-center justify-center gap-2">
+        <div className="flex items-center justify-center gap-10">
           <motion.div
             className="bg-primary/10 p-3 rounded-full"
             animate={{

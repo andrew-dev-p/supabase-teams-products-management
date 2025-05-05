@@ -21,7 +21,8 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
-import { useRouter } from "next/navigation";
+import { useMutateAuth } from "@/hooks/useMutateAuth";
+import { Loader } from "lucide-react";
 
 const signupSchema = z.object({
   email: z.string().email(),
@@ -31,8 +32,6 @@ const signupSchema = z.object({
 type SignupSchema = z.infer<typeof signupSchema>;
 
 const SignupPage = () => {
-  const router = useRouter();
-
   const form = useForm<SignupSchema>({
     defaultValues: {
       email: "",
@@ -41,9 +40,10 @@ const SignupPage = () => {
     resolver: zodResolver(signupSchema),
   });
 
+  const { signUpMutation } = useMutateAuth();
+
   const onEmailSignup = (data: SignupSchema) => {
-    router.push("/verify");
-    console.log(data);
+    signUpMutation.mutate(data);
   };
 
   return (
@@ -112,8 +112,15 @@ const SignupPage = () => {
                     )}
                   />
                 </div>
-                <Button type="submit" className="w-full">
-                  Sign up
+                <Button
+                  disabled={signUpMutation.isPending}
+                  type="submit"
+                  className="w-full"
+                >
+                  {signUpMutation.isPending && (
+                    <Loader className="mr-2 h-4 w-4 animate-spin" />
+                  )}
+                  {signUpMutation.isPending ? "Signing up..." : "Sign up"}
                 </Button>
               </div>
               <div className="text-center text-sm">
