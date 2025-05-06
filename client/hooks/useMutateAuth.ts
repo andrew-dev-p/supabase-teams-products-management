@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { client } from "@/lib/axios";
 
 export const useMutateAuth = () => {
   const supabase = createClient();
@@ -10,9 +11,11 @@ export const useMutateAuth = () => {
   const signUp = async ({
     email,
     password,
+    name,
   }: {
     email: string;
     password: string;
+    name: string;
   }) => {
     try {
       const { error } = await supabase.auth.signUp({
@@ -21,6 +24,11 @@ export const useMutateAuth = () => {
         options: {
           emailRedirectTo: `${window.location.origin}/teams`,
         },
+      });
+
+      await client.post("/createUser", {
+        email,
+        name,
       });
 
       if (error) throw error;

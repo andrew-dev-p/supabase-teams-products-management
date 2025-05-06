@@ -25,6 +25,7 @@ import { useMutateAuth } from "@/hooks/useMutateAuth";
 import { Loader } from "lucide-react";
 
 const signupSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email(),
   password: z.string().min(6),
 });
@@ -34,6 +35,7 @@ type SignupSchema = z.infer<typeof signupSchema>;
 const SignupPage = () => {
   const form = useForm<SignupSchema>({
     defaultValues: {
+      name: "",
       email: "",
       password: "",
     },
@@ -71,6 +73,26 @@ const SignupPage = () => {
                 </span>
               </div>
               <div className="grid gap-6">
+                <div className="grid gap-2">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel htmlFor="name">Name</FormLabel>
+                        <FormControl>
+                          <Input
+                            id="name"
+                            placeholder="John Doe"
+                            required
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
                 <div className="grid gap-2">
                   <FormField
                     control={form.control}
