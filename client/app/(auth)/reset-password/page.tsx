@@ -21,7 +21,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
-import { useMutateAuth } from "@/hooks/useMutateAuth";
+import { useMutateAuth } from "@/hooks/use-mutate-auth";
 import { Loader, Lock } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";

@@ -24,7 +24,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { ArrowLeft, Loader } from "lucide-react";
-import { useMutateTeams } from "@/hooks/useMutateTeams";
+import { useMutateTeams } from "@/hooks/use-mutate-teams";
 
 const createTeamSchema = z.object({
   name: z.string().min(1, "Team name is required"),
