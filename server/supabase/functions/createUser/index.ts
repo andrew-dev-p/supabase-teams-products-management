@@ -33,7 +33,7 @@ Deno.serve(async (req) => {
   }
 
   const { data, error } = await supabase
-    .from("user")
+    .from("users")
     .insert([{ email, name }])
     .select()
     .single();

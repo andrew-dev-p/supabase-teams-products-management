@@ -10,7 +10,7 @@ Deno.serve(async (req) => {
     return new Response("Method Not Allowed", { status: 405 });
   }
 
-  const { data, error } = await supabase.from("user").select("*");
+  const { data, error } = await supabase.from("users").select("*");
 
   if (error) return new Response(JSON.stringify(error), { status: 400 });
 
