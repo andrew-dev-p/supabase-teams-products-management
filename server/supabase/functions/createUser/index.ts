@@ -16,25 +16,24 @@ Deno.serve(async (req) => {
     });
   }
 
-  if (req.method !== "POST" && req.method !== "OPTIONS") {
-    return new Response("Method Not Allowed", { status: 405 });
-  }
-
-  let body;
+  let payload;
   try {
-    body = await req.json();
+    payload = await req.json();
   } catch {
     return new Response("Invalid JSON", { status: 400 });
   }
 
-  const { email, name } = body;
-  if (!email || !name) {
-    return new Response("Missing fields", { status: 400 });
+  const record = payload.record;
+
+  if (!record?.email || !record?.id) {
+    return new Response("Missing user data", { status: 400 });
   }
+
+  const name = record.raw_user_meta_data?.name || "Anonymous";
 
   const { data, error } = await supabase
     .from("users")
-    .insert([{ email, name }])
+    .insert([{ id: record.id, email: record.email, name }])
     .select()
     .single();
 

@@ -23,7 +23,8 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader } from "lucide-react";
+import { useMutateTeams } from "@/hooks/useMutateTeams";
 
 const createTeamSchema = z.object({
   name: z.string().min(1, "Team name is required"),
@@ -49,8 +50,13 @@ export default function CreateTeam() {
     resolver: zodResolver(createTeamSchema),
   });
 
+  const { createTeamMutation } = useMutateTeams();
+
   const onSubmit = async (data: CreateTeamSchema) => {
-    console.log(data);
+    createTeamMutation.mutate({
+      name: data.name,
+      slug: data.slug || "",
+    });
   };
 
   return (
@@ -127,7 +133,16 @@ export default function CreateTeam() {
               >
                 Cancel
               </Button>
-              <Button type="submit">Create Team</Button>
+              <Button type="submit" disabled={createTeamMutation.isPending}>
+                {createTeamMutation.isPending ? (
+                  <>
+                    <Loader className="mr-2 h-4 w-4 animate-spin" />
+                    Creating...
+                  </>
+                ) : (
+                  "Create Team"
+                )}
+              </Button>
             </CardFooter>
           </form>
         </Form>
