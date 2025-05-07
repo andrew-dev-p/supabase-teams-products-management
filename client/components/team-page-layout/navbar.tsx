@@ -13,8 +13,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
+import { Team } from "@/lib/entities";
 
-export function Navbar() {
+export function Navbar({ team }: { team: Team }) {
+  console.log(team.name);
+
   return (
     <header className="rounded-3xl sticky top-2 mx-2 z-10 flex h-16 items-center gap-4 border-b bg-[#BDE141] px-4 md:px-6">
       <Link href="/" className="flex items-center gap-2 font-semibold">
@@ -27,9 +30,9 @@ export function Navbar() {
         <div className="hidden md:flex items-center gap-2">
           <Badge
             variant="outline"
-            className="text-xs font-bold text-[#5E9C0A] border-[#5E9C0A]"
+            className="text-xs text-[#5E9C0A] border-[#5E9C0A]"
           >
-            Team &mdash; Alpha
+            Team &mdash; <span className="font-bold">{team.name}</span>
           </Badge>
         </div>
         <DropdownMenu>

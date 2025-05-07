@@ -15,59 +15,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { useSidebar } from "./sidebar-provider";
+import { Team } from "@/lib/entities";
 
-type User = {
-  id: string;
-  name: string;
-  email: string;
-  avatar: string;
-  status: "online" | "offline";
-};
-
-export function Sidebar() {
+export function Sidebar({ team }: { team: Team }) {
   const { collapsed, toggleSidebar } = useSidebar();
-  const [users, setUsers] = useState<User[]>([]);
-
-  useEffect(() => {
-    const mockUsers: User[] = [
-      {
-        id: "1",
-        name: "John Doe",
-        email: "john@example.com",
-        avatar: "/placeholder.svg",
-        status: "online",
-      },
-      {
-        id: "2",
-        name: "Jane Smith",
-        email: "jane@example.com",
-        avatar: "/placeholder.svg",
-        status: "online",
-      },
-      {
-        id: "3",
-        name: "Bob Johnson",
-        email: "bob@example.com",
-        avatar: "/placeholder.svg",
-        status: "offline",
-      },
-      {
-        id: "4",
-        name: "Alice Brown",
-        email: "alice@example.com",
-        avatar: "/placeholder.svg",
-        status: "online",
-      },
-      {
-        id: "5",
-        name: "Charlie Davis",
-        email: "charlie@example.com",
-        avatar: "/placeholder.svg",
-        status: "offline",
-      },
-    ];
-    setUsers(mockUsers);
-  }, []);
 
   return (
     <aside
@@ -79,7 +30,7 @@ export function Sidebar() {
       <div className="flex h-16 items-center justify-between border-b border-[#5E9C0A] px-4">
         {!collapsed && (
           <h2 className="text-lg text-[#5E9C0A] font-semibold whitespace-nowrap">
-            Your Team
+            {team.name}
           </h2>
         )}
         <Button
@@ -135,7 +86,7 @@ export function Sidebar() {
           <span className="font-medium whitespace-nowrap">Team Members</span>
         )}
       </div>
-      <ScrollArea className="flex-1">
+      {/* <ScrollArea className="flex-1">
         <div className="flex flex-col gap-2 px-4">
           {users.map((user) => (
             <div
@@ -176,7 +127,7 @@ export function Sidebar() {
             </div>
           ))}
         </div>
-      </ScrollArea>
+      </ScrollArea> */}
     </aside>
   );
 }

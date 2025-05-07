@@ -60,12 +60,10 @@ Deno.serve(async (req) => {
     return createResponse(teamError, 400);
   }
 
-  const { data: userData, error: userError } = await supabase
+  const { error: userError } = await supabase
     .from("users")
     .update({ team_id: teamData.id })
     .eq("id", userId);
-
-  console.log(userData);
 
   if (userError) {
     return createResponse(userError, 400);
