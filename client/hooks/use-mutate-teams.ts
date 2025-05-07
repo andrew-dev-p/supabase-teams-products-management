@@ -26,7 +26,27 @@ export const useMutateTeams = () => {
     mutationFn: createTeam,
   });
 
+  const joinTeam = async ({ slug }: { slug: string }) => {
+    try {
+      await client.post("/joinTeam", {
+        slug,
+      });
+
+      toast.success("Successfully joined team!");
+      router.push(`/teams/${slug}`);
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "An unknown error occurred"
+      );
+    }
+  };
+
+  const joinTeamMutation = useMutation({
+    mutationFn: joinTeam,
+  });
+
   return {
     createTeamMutation,
+    joinTeamMutation,
   };
 };

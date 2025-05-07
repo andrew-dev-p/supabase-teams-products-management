@@ -22,18 +22,18 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
-import { ArrowLeft } from "lucide-react";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSeparator,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
+import { ArrowLeft, Loader } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { useMutateTeams } from "@/hooks/use-mutate-teams";
 
 const joinTeamSchema = z.object({
-  inviteCode: z
+  slug: z
     .string()
-    .regex(/^\d{6}$/, "Invite code must be a 6 digit number"),
+    .min(1, "Team URL is required")
+    .regex(
+      /^[a-z0-9-]+$/,
+      "Team URL can only contain lowercase letters, numbers, and hyphens"
+    ),
 });
 
 type JoinTeamSchema = z.infer<typeof joinTeamSchema>;
@@ -41,15 +41,19 @@ type JoinTeamSchema = z.infer<typeof joinTeamSchema>;
 const JoinTeamPage = () => {
   const router = useRouter();
 
+  const { joinTeamMutation } = useMutateTeams();
+
   const form = useForm<JoinTeamSchema>({
     defaultValues: {
-      inviteCode: "",
+      slug: "",
     },
     resolver: zodResolver(joinTeamSchema),
   });
 
   const onSubmit = async (data: JoinTeamSchema) => {
-    console.log(data);
+    joinTeamMutation.mutate({
+      slug: data.slug,
+    });
   };
 
   return (
@@ -65,7 +69,7 @@ const JoinTeamPage = () => {
             <CardTitle>Join a Team</CardTitle>
           </div>
           <CardDescription>
-            Enter the invitation code you received
+            Enter the team slug you want to join
           </CardDescription>
         </CardHeader>
         <Form {...form}>
@@ -74,26 +78,12 @@ const JoinTeamPage = () => {
               <div className="grid gap-6">
                 <FormField
                   control={form.control}
-                  name="inviteCode"
+                  name="slug"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel htmlFor="invite-code">
-                        Invitation Code
-                      </FormLabel>
+                      <FormLabel>Team slug</FormLabel>
                       <FormControl>
-                        <InputOTP maxLength={6} {...field}>
-                          <InputOTPGroup>
-                            <InputOTPSlot index={0} />
-                            <InputOTPSlot index={1} />
-                            <InputOTPSlot index={2} />
-                          </InputOTPGroup>
-                          <InputOTPSeparator />
-                          <InputOTPGroup>
-                            <InputOTPSlot index={3} />
-                            <InputOTPSlot index={4} />
-                            <InputOTPSlot index={5} />
-                          </InputOTPGroup>
-                        </InputOTP>
+                        <Input placeholder="my-team-slug" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -109,7 +99,16 @@ const JoinTeamPage = () => {
               >
                 Cancel
               </Button>
-              <Button type="submit">Join Team</Button>
+              <Button disabled={joinTeamMutation.isPending} type="submit">
+                {joinTeamMutation.isPending ? (
+                  <>
+                    <Loader className="mr-2 h-4 w-4 animate-spin" />
+                    Joining...
+                  </>
+                ) : (
+                  "Join Team"
+                )}
+              </Button>
             </CardFooter>
           </form>
         </Form>
