@@ -16,8 +16,11 @@ import { cn } from "@/lib/utils";
 import { useSidebar } from "./sidebar-provider";
 import { Team } from "@/lib/entities";
 import { useQueryTeamUsers } from "@/hooks/use-query-team-users";
+import { usePathname } from "next/navigation";
 
 export function Sidebar({ team }: { team: Team }) {
+  const pathname = usePathname();
+
   const { collapsed, toggleSidebar } = useSidebar();
 
   const { data: users } = useQueryTeamUsers(team.id);
@@ -54,25 +57,27 @@ export function Sidebar({ team }: { team: Team }) {
         </Button>
       </div>
       <div className="flex flex-col gap-2 p-4">
-        <Link href="/">
+        <Link href={`/teams/${team.slug}/products`}>
           <Button
             variant="outline"
             size={collapsed ? "icon" : "default"}
             className={cn(
               "w-full justify-start",
-              collapsed && "justify-center px-0"
+              collapsed && "justify-center px-0",
+              !pathname.includes("create") && "border-b-4 border-black"
             )}
           >
             <Package className={cn("h-5 w-5", !collapsed && "mr-2")} />
             {!collapsed && <span>Products</span>}
           </Button>
         </Link>
-        <Link href="/products/new">
+        <Link href={`/teams/${team.slug}/products/create`}>
           <Button
             variant="outline"
             className={cn(
               "w-full justify-start",
-              collapsed && "justify-center px-0"
+              collapsed && "justify-center px-0",
+              pathname.includes("create") && "border-b-4 border-black"
             )}
           >
             <Plus className={cn("h-5 w-5", !collapsed && "mr-2")} />

@@ -10,7 +10,11 @@ const TeamPage = () => {
 
   const getTeamQuery = useQueryTeam(slug as string);
 
-  return <TeamPageLayout team={getTeamQuery.data}>123</TeamPageLayout>;
+  return (
+    <TeamPageLayout team={getTeamQuery.data}>
+      some products are gonna be displayed here
+    </TeamPageLayout>
+  );
 };
 
 export default TeamPage;
