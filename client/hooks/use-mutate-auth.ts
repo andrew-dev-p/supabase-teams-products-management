@@ -108,6 +108,25 @@ export const useMutateAuth = () => {
     }
   };
 
+  const logout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+
+      if (error) throw error;
+
+      toast.success("Logged out successfully!");
+      router.push("/");
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "An unknown error occurred"
+      );
+    }
+  };
+
+  const logoutMutation = useMutation({
+    mutationFn: logout,
+  });
+
   const resetPasswordMutation = useMutation({
     mutationFn: resetPassword,
   });
@@ -117,5 +136,6 @@ export const useMutateAuth = () => {
     loginMutation,
     forgotPasswordMutation,
     resetPasswordMutation,
+    logoutMutation,
   };
 };

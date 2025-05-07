@@ -14,9 +14,12 @@ import {
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Team } from "@/lib/entities";
+import { useMutateAuth } from "@/hooks/use-mutate-auth";
 
 export function Navbar({ team }: { team: Team }) {
   console.log(team.name);
+
+  const { logoutMutation } = useMutateAuth();
 
   return (
     <header className="rounded-3xl sticky top-2 mx-2 z-10 flex h-16 items-center gap-4 border-b bg-[#BDE141] px-4 md:px-6">
@@ -53,7 +56,9 @@ export function Navbar({ team }: { team: Team }) {
             <DropdownMenuItem>Profile</DropdownMenuItem>
             <DropdownMenuItem>Settings</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Log out</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => logoutMutation.mutate()}>
+              Log out
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
