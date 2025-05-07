@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Package,
@@ -16,9 +15,16 @@ import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { useSidebar } from "./sidebar-provider";
 import { Team } from "@/lib/entities";
+import { useQueryTeamUsers } from "@/hooks/use-query-team-users";
 
 export function Sidebar({ team }: { team: Team }) {
   const { collapsed, toggleSidebar } = useSidebar();
+
+  const { data: users } = useQueryTeamUsers(team.id);
+
+  if (!users) {
+    return null;
+  }
 
   return (
     <aside
@@ -83,10 +89,12 @@ export function Sidebar({ team }: { team: Team }) {
       >
         <Users className={cn("h-5 w-5", !collapsed && "mr-2")} />
         {!collapsed && (
-          <span className="font-medium whitespace-nowrap">Team Members</span>
+          <span className="font-medium whitespace-nowrap">
+            Team Members ({users.length})
+          </span>
         )}
       </div>
-      {/* <ScrollArea className="flex-1">
+      <ScrollArea className="flex-1">
         <div className="flex flex-col gap-2 px-4">
           {users.map((user) => (
             <div
@@ -99,7 +107,7 @@ export function Sidebar({ team }: { team: Team }) {
               <div className="relative">
                 <Avatar className="h-8 w-8">
                   <AvatarImage
-                    src={user.avatar || "/placeholder.svg"}
+                    src={user.profile_picture || "/placeholder.svg"}
                     alt={user.name}
                   />
                   <AvatarFallback>
@@ -112,7 +120,7 @@ export function Sidebar({ team }: { team: Team }) {
                 <span
                   className={cn(
                     "absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-background",
-                    user.status === "online" ? "bg-green-500" : "bg-gray-400"
+                    user.is_online ? "bg-green-500" : "bg-gray-400"
                   )}
                 />
               </div>
@@ -120,14 +128,14 @@ export function Sidebar({ team }: { team: Team }) {
                 <div className="flex flex-col">
                   <span className="text-sm font-medium">{user.name}</span>
                   <span className="text-xs text-muted-foreground">
-                    {user.status}
+                    {user.is_online ? "online" : "offline"}
                   </span>
                 </div>
               )}
             </div>
           ))}
         </div>
-      </ScrollArea> */}
+      </ScrollArea>
     </aside>
   );
 }
