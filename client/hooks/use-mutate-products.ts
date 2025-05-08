@@ -33,7 +33,7 @@ export const useMutateProducts = (teamId: string) => {
       toast.success("Product created successfully!");
       router.push(`/teams/${slug}/products/${data.id}`);
       queryClient.invalidateQueries({
-        queryKey: [QueryKey.GET_PRODUCTS, { teamId }],
+        queryKey: [QueryKey.GET_PRODUCTS, teamId],
       });
     } catch (error) {
       toast.error(
@@ -72,7 +72,7 @@ export const useMutateProducts = (teamId: string) => {
 
       toast.success("Product updated successfully!");
       queryClient.invalidateQueries({
-        queryKey: [QueryKey.GET_PRODUCTS, { teamId }],
+        queryKey: [QueryKey.GET_PRODUCTS, teamId],
       });
     } catch (error) {
       toast.error(

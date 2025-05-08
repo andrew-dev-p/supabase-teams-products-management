@@ -15,7 +15,6 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import { useQueryProducts } from "@/hooks/use-query-products";
 import { useState } from "react";
 import { useMutateProducts } from "@/hooks/use-mutate-products";
 import {
@@ -28,16 +27,14 @@ import {
 import EditProductDialog from "./edit-product-dialog";
 
 const ProductsTable = ({
+  data,
   teamId,
-  search,
 }: {
+  data: Product[];
   teamId: string;
-  search: string;
 }) => {
   const [deleteDialogId, setDeleteDialogId] = useState<string | null>(null);
   const [editDialogId, setEditDialogId] = useState<string | null>(null);
-
-  const getProductsQuery = useQueryProducts(teamId, search);
 
   const { updateProductMutation } = useMutateProducts(teamId);
 
@@ -53,7 +50,7 @@ const ProductsTable = ({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {getProductsQuery.data?.map((product) => (
+        {data?.map((product) => (
           <React.Fragment key={product.id}>
             <DeleteDialog
               title="Delete product"

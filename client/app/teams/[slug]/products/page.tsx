@@ -31,7 +31,7 @@ import ProductsTable from "./products-table";
 const TeamPage = () => {
   const [search, setSearch] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<Status | null>(null);
+  const [statusFilter, setStatusFilter] = useState<Status | "all">("all");
 
   const params = useParams();
   const slug = params.slug;
@@ -40,7 +40,8 @@ const TeamPage = () => {
 
   const getProductsQuery = useQueryProducts(
     getTeamQuery.data?.id as string,
-    searchQuery
+    searchQuery,
+    statusFilter
   );
 
   console.log("component: ", searchQuery);
@@ -81,7 +82,7 @@ const TeamPage = () => {
                 <DropdownMenuLabel className="text-xs">
                   Status
                 </DropdownMenuLabel>
-                <DropdownMenuItem onClick={() => setStatusFilter(null)}>
+                <DropdownMenuItem onClick={() => setStatusFilter("all")}>
                   All
                 </DropdownMenuItem>
                 <DropdownMenuItem
@@ -95,31 +96,31 @@ const TeamPage = () => {
                 <DropdownMenuItem
                   onClick={() => setStatusFilter(Status.DELETED)}
                 >
-                  Archived
+                  Deleted
                 </DropdownMenuItem>
               </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
         <Select
-          value={statusFilter || undefined}
-          onValueChange={(value: Status) => setStatusFilter(value)}
+          value={statusFilter}
+          onValueChange={(value: Status | "all") => setStatusFilter(value)}
         >
-          <SelectTrigger className="w-[180px] -ml-1.5">
+          <SelectTrigger className="w-[180px] -ml-1.5 bg-background">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Statuses</SelectItem>
-            <SelectItem value="active">Active</SelectItem>
-            <SelectItem value="draft">Draft</SelectItem>
-            <SelectItem value="archived">Archived</SelectItem>
+            <SelectItem value={"all"}>All Statuses</SelectItem>
+            <SelectItem value={Status.ACTIVE}>Active</SelectItem>
+            <SelectItem value={Status.DRAFT}>Draft</SelectItem>
+            <SelectItem value={Status.DELETED}>Deleted</SelectItem>
           </SelectContent>
         </Select>
       </div>
       <div className="rounded-md border">
         <ProductsTable
+          data={getProductsQuery.data || []}
           teamId={getTeamQuery.data?.id as string}
-          search={searchQuery}
         />
       </div>
       {getProductsQuery.isPending && <>TODO: Skeleton</>}

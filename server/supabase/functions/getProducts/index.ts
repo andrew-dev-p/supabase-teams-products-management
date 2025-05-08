@@ -23,6 +23,7 @@ Deno.serve(async (req) => {
   const url = new URL(req.url);
   const teamId = url.searchParams.get("team_id");
   const search = url.searchParams.get("search");
+  const status = url.searchParams.get("status");
 
   if (!teamId) {
     return new Response("Missing team_id parameter", { status: 400 });
@@ -45,6 +46,10 @@ Deno.serve(async (req) => {
 
   if (search) {
     query = query.or(`title.ilike.%${search}%,description.ilike.%${search}%`);
+  }
+
+  if (status) {
+    query = query.eq("status", status);
   }
 
   query = query.order("created_at", { ascending: false });
