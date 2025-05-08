@@ -36,7 +36,8 @@ const ProductsTable = ({
   const [deleteDialogId, setDeleteDialogId] = useState<string | null>(null);
   const [editDialogId, setEditDialogId] = useState<string | null>(null);
 
-  const { updateProductMutation } = useMutateProducts(teamId);
+  const { updateProductMutation, setProductDeletedMutation } =
+    useMutateProducts(teamId);
 
   return (
     <Table className="bg-background rounded-md">
@@ -58,10 +59,7 @@ const ProductsTable = ({
               isOpen={deleteDialogId === product.id}
               onClose={() => setDeleteDialogId(null)}
               onDelete={() => {
-                updateProductMutation.mutate({
-                  id: product.id,
-                  status: Status.DELETED,
-                });
+                setProductDeletedMutation.mutate(product.id);
                 setDeleteDialogId(null);
               }}
             />

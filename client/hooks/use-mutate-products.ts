@@ -85,8 +85,32 @@ export const useMutateProducts = (teamId: string) => {
     mutationFn: updateProduct,
   });
 
+  const setProductDeleted = async (productId: string) => {
+    try {
+      await client.post("/setProductDeleted", {
+        productId,
+      });
+
+      toast.success(
+        "Product set as deleted successfully. Be careful as it will be deleted in 2 days if no changes are made!"
+      );
+      queryClient.invalidateQueries({
+        queryKey: [QueryKey.GET_PRODUCTS, teamId],
+      });
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "An unknown error occurred"
+      );
+    }
+  };
+
+  const setProductDeletedMutation = useMutation({
+    mutationFn: setProductDeleted,
+  });
+
   return {
     createProductMutation,
     updateProductMutation,
+    setProductDeletedMutation,
   };
 };

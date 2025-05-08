@@ -56,6 +56,7 @@ Deno.serve(async (req) => {
       description: product.description,
       picture: product.picture,
       status: product.status,
+      deleted_at: product.status === 'active' || product.status === 'draft' ? null : undefined,
     })
     .eq("id", product.id);
 
