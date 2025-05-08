@@ -17,11 +17,18 @@ export interface Team {
   created_at: string;
 }
 
+export enum Status {
+  ACTIVE = "active",
+  DRAFT = "draft",
+  DELETED = "deleted",
+}
+
 export interface Product {
   id: string;
-  name: string;
+  title: string;
   description: string;
   picture: string;
+  status: Status;
   team_id: string;
   created_at: string;
 }

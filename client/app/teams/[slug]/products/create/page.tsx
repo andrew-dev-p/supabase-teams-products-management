@@ -56,13 +56,20 @@ const CreateTeamProduct = () => {
   });
 
   const handleUploadImageToSupabase = async (file: File) => {
-    const { data, error } = await supabase.storage
+    const { error } = await supabase.storage
       .from("products")
       .upload(file.name, file);
+
     if (error) {
       console.error("Error uploading image:", error);
+      return null;
     }
-    return data;
+
+    const { data: publicUrl } = await supabase.storage
+      .from("products")
+      .getPublicUrl(file.name);
+
+    return publicUrl;
   };
 
   const getTeamQuery = useQueryTeam(slug as string);
@@ -141,7 +148,10 @@ const CreateTeamProduct = () => {
                           onImageSelect={async (file: File) => {
                             const uploadedImage =
                               await handleUploadImageToSupabase(file);
-                            form.setValue("image", uploadedImage?.path || "");
+                            form.setValue(
+                              "image",
+                              uploadedImage?.publicUrl || ""
+                            );
                           }}
                           defaultImage={field.value || ""}
                         />
