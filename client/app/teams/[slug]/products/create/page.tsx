@@ -5,7 +5,7 @@ import { useQueryTeam } from "@/hooks/use-query-team";
 import TeamPageLayout from "@/components/team-page-layout/team-page-layout";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import {
   Form,
@@ -30,6 +30,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { CardStylePicker } from "@/components/image-pickers/card-style-picker";
 import { createClient } from "@/lib/supabase/client";
+import { useMutateProducts } from "@/hooks/use-mutate-products";
 
 const productSchema = z.object({
   title: z.string().min(2, "Title must be at least 2 characters"),
@@ -65,12 +66,16 @@ const CreateTeamProduct = () => {
   };
 
   const getTeamQuery = useQueryTeam(slug as string);
+  const { createProductMutation } = useMutateProducts();
 
   const onSubmit = async (data: Product) => {
-    console.log(data);
+    createProductMutation.mutate({
+      title: data.title,
+      description: data.description,
+      picture: data.image || "",
+      team: getTeamQuery.data,
+    });
   };
-
-  const isSubmitting = false;
 
   return (
     <TeamPageLayout team={getTeamQuery.data}>
@@ -150,8 +155,18 @@ const CreateTeamProduct = () => {
                 <Button variant="outline" asChild>
                   <Link href={`/teams/${slug}/products`}>Cancel</Link>
                 </Button>
-                <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? "Creating..." : "Create Product"}
+                <Button
+                  type="submit"
+                  disabled={createProductMutation.isPending}
+                >
+                  {createProductMutation.isPending ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Creating...
+                    </>
+                  ) : (
+                    "Create Product"
+                  )}
                 </Button>
               </CardFooter>
             </Card>
