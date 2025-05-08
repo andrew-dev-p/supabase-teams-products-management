@@ -7,7 +7,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const statusToColorsMap = {
-  [Status.ACTIVE]: "bg-brand-500",
+  [Status.ACTIVE]: "bg-green-500",
   [Status.DRAFT]: "bg-amber-500",
-  [Status.DELETED]: "bg-gray-500",
+  [Status.DELETED]: "bg-red-500",
 };

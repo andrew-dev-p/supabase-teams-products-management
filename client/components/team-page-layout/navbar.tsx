@@ -17,8 +17,6 @@ import { Team } from "@/lib/entities";
 import { useMutateAuth } from "@/hooks/use-mutate-auth";
 
 export function Navbar({ team }: { team: Team }) {
-  console.log(team.name);
-
   const { logoutMutation } = useMutateAuth();
 
   return (

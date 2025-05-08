@@ -73,14 +73,16 @@ const CreateTeamProduct = () => {
   };
 
   const getTeamQuery = useQueryTeam(slug as string);
-  const { createProductMutation } = useMutateProducts();
+  const { createProductMutation } = useMutateProducts(
+    getTeamQuery.data?.id as string
+  );
 
   const onSubmit = async (data: Product) => {
     createProductMutation.mutate({
       title: data.title,
       description: data.description,
       picture: data.image || "",
-      team: getTeamQuery.data,
+      slug: slug as string,
     });
   };
 

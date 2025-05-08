@@ -4,17 +4,7 @@ import TeamPageLayout from "@/components/team-page-layout/team-page-layout";
 import { useParams } from "next/navigation";
 import { useQueryTeam } from "@/hooks/use-query-team";
 import { useQueryProducts } from "@/hooks/use-query-products";
-import { ProductCard } from "@/components/product-card";
-import {
-  Check,
-  Edit,
-  MoreHorizontal,
-  Notebook,
-  Package,
-  Plus,
-  Search,
-  Trash,
-} from "lucide-react";
+import { Package, Plus, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
@@ -36,25 +26,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import Image from "next/image";
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
-import { statusToColorsMap } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
+import React from "react";
+import ProductsTable from "./products-table";
 
 const TeamPage = () => {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<Status | null>(null);
-  const [createDateFilter, setCreateDateFilter] = useState<string | null>(null);
-  const [createdByFilter, setCreatedByFilter] = useState<string | null>(null);
 
   const params = useParams();
   const slug = params.slug;
@@ -128,94 +107,7 @@ const TeamPage = () => {
       </div>
       {getProductsQuery.data && getProductsQuery.data.length > 0 ? (
         <div className="rounded-md border">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[80px]">Image</TableHead>
-                <TableHead>Title</TableHead>
-                <TableHead className="hidden md:table-cell">
-                  Description
-                </TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {getProductsQuery.data.map((product) => (
-                <TableRow key={product.id}>
-                  <TableCell>
-                    <div className="relative h-10 w-10 overflow-hidden rounded-md">
-                      <Image
-                        src={product.picture || "/placeholder.svg"}
-                        alt={product.title}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                  </TableCell>
-                  <TableCell className="font-medium">
-                    <Link
-                      href={`/products/${product.id}`}
-                      className="hover:underline"
-                    >
-                      {product.title}
-                    </Link>
-                  </TableCell>
-                  <TableCell className="hidden max-w-[300px] truncate md:table-cell">
-                    {product.description}
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      className={`${
-                        statusToColorsMap[product.status]
-                      } text-white`}
-                    >
-                      {product.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="icon">
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">More actions</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuGroup>
-                          <DropdownMenuItem>
-                            <Edit className="mr-2 h-4 w-4" />
-                            Edit properties
-                          </DropdownMenuItem>
-                          {(product.status === Status.ACTIVE ||
-                            product.status === Status.DELETED) && (
-                            <DropdownMenuItem>
-                              <Notebook className="mr-2 h-4 w-4" />
-                              Set as Draft
-                            </DropdownMenuItem>
-                          )}
-                          {(product.status === Status.DRAFT ||
-                            product.status === Status.DELETED) && (
-                            <DropdownMenuItem>
-                              <Check className="mr-2 h-4 w-4" />
-                              Set as Active
-                            </DropdownMenuItem>
-                          )}
-                          {(product.status === Status.DRAFT ||
-                            product.status === Status.ACTIVE) && (
-                            <DropdownMenuItem>
-                              <Trash className="mr-2 h-4 w-4" />
-                              Set as Deleted
-                            </DropdownMenuItem>
-                          )}
-                        </DropdownMenuGroup>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <ProductsTable teamId={getTeamQuery.data?.id as string} />
         </div>
       ) : (
         <Card>

@@ -128,6 +128,7 @@ export function CardStylePicker({
       <CardFooter className="flex justify-between">
         {!preview ? (
           <Button
+            type="button"
             onClick={() => fileInputRef.current?.click()}
             className="w-full"
           >
@@ -135,16 +136,17 @@ export function CardStylePicker({
           </Button>
         ) : showCropTools ? (
           <>
-            <Button variant="outline" onClick={clearImage}>
+            <Button type="button" variant="outline" onClick={clearImage}>
               Cancel
             </Button>
-            <Button onClick={finishCropping}>
+            <Button type="button" onClick={finishCropping}>
               <Crop className="h-4 w-4 mr-2" />
               Apply Crop
             </Button>
           </>
         ) : (
           <Button
+            type="button"
             onClick={() => fileInputRef.current?.click()}
             variant="outline"
           >

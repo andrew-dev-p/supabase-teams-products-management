@@ -25,12 +25,7 @@ Deno.serve(async (req) => {
 
   const product = payload.product;
 
-  if (
-    !product?.title ||
-    !product?.description ||
-    !product?.picture ||
-    !product?.team_id
-  ) {
+  if (!product?.title || !product?.description || !product?.team_id) {
     return new Response("Missing product data", { status: 400 });
   }
 
