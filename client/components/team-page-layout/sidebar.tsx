@@ -17,6 +17,8 @@ import { useSidebar } from "./sidebar-provider";
 import { Team } from "@/lib/entities";
 import { useQueryTeamUsers } from "@/hooks/use-query-team-users";
 import { usePathname } from "next/navigation";
+import { usePresence } from "@/hooks/use-presence";
+import { useQueryCurrentUser } from "@/hooks/use-query-current-user";
 
 export function Sidebar({ team }: { team?: Team }) {
   const pathname = usePathname();
@@ -25,7 +27,11 @@ export function Sidebar({ team }: { team?: Team }) {
 
   const { data: users } = useQueryTeamUsers(team?.id as string);
 
-  if (!users || !team) {
+  const { data: currentUser } = useQueryCurrentUser();
+
+  usePresence(team?.id as string, currentUser);
+
+  if (!users || !team || !currentUser) {
     return null;
   }
 
