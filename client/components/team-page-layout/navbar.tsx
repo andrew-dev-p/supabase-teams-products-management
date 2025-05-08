@@ -16,8 +16,12 @@ import { Badge } from "@/components/ui/badge";
 import { Team } from "@/lib/entities";
 import { useMutateAuth } from "@/hooks/use-mutate-auth";
 
-export function Navbar({ team }: { team: Team }) {
+export function Navbar({ team }: { team?: Team }) {
   const { logoutMutation } = useMutateAuth();
+
+  if (!team) {
+    return null;
+  }
 
   return (
     <header className="rounded-3xl sticky top-2 mx-2 z-10 flex h-16 items-center gap-4 border-b bg-[#BDE141] px-4 md:px-6">

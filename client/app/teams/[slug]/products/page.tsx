@@ -4,7 +4,7 @@ import TeamPageLayout from "@/components/team-page-layout/team-page-layout";
 import { useParams } from "next/navigation";
 import { useQueryTeam } from "@/hooks/use-query-team";
 import { useQueryProducts } from "@/hooks/use-query-products";
-import { Package, Plus, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
@@ -17,7 +17,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Filter } from "lucide-react";
-import { useState } from "react";
 import { Status } from "@/lib/entities";
 import {
   Select,
@@ -26,13 +25,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Link from "next/link";
-import { Card, CardContent } from "@/components/ui/card";
-import React from "react";
+import React, { useState } from "react";
 import ProductsTable from "./products-table";
 
 const TeamPage = () => {
   const [search, setSearch] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<Status | null>(null);
 
   const params = useParams();
@@ -40,21 +38,34 @@ const TeamPage = () => {
 
   const getTeamQuery = useQueryTeam(slug as string);
 
-  const getProductsQuery = useQueryProducts(getTeamQuery.data?.id as string);
+  const getProductsQuery = useQueryProducts(
+    getTeamQuery.data?.id as string,
+    searchQuery
+  );
+
+  console.log("component: ", searchQuery);
 
   return (
     <TeamPageLayout team={getTeamQuery.data}>
       <div className="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex flex-1 items-center gap-2">
-          <div className="relative flex-1">
+          <div className="relative flex-1 flex">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
               placeholder="Search products..."
-              className="pl-8"
+              className="pl-8 bg-background rounded-r-none"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
+            <Button
+              className="rounded-l-none"
+              variant="outline"
+              size="icon"
+              onClick={() => setSearchQuery(search)}
+            >
+              <Search />
+            </Button>
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -105,31 +116,13 @@ const TeamPage = () => {
           </SelectContent>
         </Select>
       </div>
-      {getProductsQuery.data && getProductsQuery.data.length > 0 ? (
-        <div className="rounded-md border">
-          <ProductsTable teamId={getTeamQuery.data?.id as string} />
-        </div>
-      ) : (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center p-6">
-            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-muted">
-              <Package className="h-10 w-10 text-muted-foreground" />
-            </div>
-            <h3 className="mt-4 text-lg font-semibold">No products found</h3>
-            <p className="mb-4 mt-2 text-center text-sm text-muted-foreground">
-              {search
-                ? "No products match your search criteria."
-                : "Get started by creating a new product."}
-            </p>
-            <Link href={`/teams/${slug}/products/create`}>
-              <Button>
-                <Plus className="mr-2 h-4 w-4" />
-                Add Product
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
-      )}
+      <div className="rounded-md border">
+        <ProductsTable
+          teamId={getTeamQuery.data?.id as string}
+          search={searchQuery}
+        />
+      </div>
+      {getProductsQuery.isPending && <>TODO: Skeleton</>}
     </TeamPageLayout>
   );
 };

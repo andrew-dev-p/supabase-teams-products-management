@@ -27,11 +27,17 @@ import {
 } from "@/components/ui/dropdown-menu";
 import EditProductDialog from "./edit-product-dialog";
 
-const ProductsTable = ({ teamId }: { teamId: string }) => {
+const ProductsTable = ({
+  teamId,
+  search,
+}: {
+  teamId: string;
+  search: string;
+}) => {
   const [deleteDialogId, setDeleteDialogId] = useState<string | null>(null);
   const [editDialogId, setEditDialogId] = useState<string | null>(null);
 
-  const getProductsQuery = useQueryProducts(teamId);
+  const getProductsQuery = useQueryProducts(teamId, search);
 
   const { updateProductMutation } = useMutateProducts(teamId);
 

@@ -22,12 +22,13 @@ Deno.serve(async (req) => {
 
   const url = new URL(req.url);
   const teamId = url.searchParams.get("team_id");
+  const search = url.searchParams.get("search");
 
   if (!teamId) {
     return new Response("Missing team_id parameter", { status: 400 });
   }
 
-  const { data, error } = await supabase
+  let query = supabase
     .from("products")
     .select(
       `
@@ -40,8 +41,15 @@ Deno.serve(async (req) => {
       team_id
     `
     )
-    .eq("team_id", teamId)
-    .order("created_at", { ascending: false });
+    .eq("team_id", teamId);
+
+  if (search) {
+    query = query.or(`title.ilike.%${search}%,description.ilike.%${search}%`);
+  }
+
+  query = query.order("created_at", { ascending: false });
+
+  const { data, error } = await query;
 
   if (error) {
     return new Response(JSON.stringify(error), {

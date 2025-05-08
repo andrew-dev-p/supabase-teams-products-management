@@ -18,14 +18,14 @@ import { Team } from "@/lib/entities";
 import { useQueryTeamUsers } from "@/hooks/use-query-team-users";
 import { usePathname } from "next/navigation";
 
-export function Sidebar({ team }: { team: Team }) {
+export function Sidebar({ team }: { team?: Team }) {
   const pathname = usePathname();
 
   const { collapsed, toggleSidebar } = useSidebar();
 
-  const { data: users } = useQueryTeamUsers(team.id);
+  const { data: users } = useQueryTeamUsers(team?.id as string);
 
-  if (!users) {
+  if (!users || !team) {
     return null;
   }
 

@@ -8,10 +8,6 @@ const TeamPageLayout = ({
   children,
   team,
 }: PropsWithChildren<{ team?: Team }>) => {
-  if (!team) {
-    return null;
-  }
-
   return (
     <SidebarProvider>
       <div className="flex h-screen flex-col">
