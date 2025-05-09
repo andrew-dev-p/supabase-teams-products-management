@@ -6,17 +6,7 @@ import { useQueryTeam } from "@/hooks/use-query-team";
 import { useQueryProducts } from "@/hooks/use-query-products";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Filter } from "lucide-react";
 import { Status } from "@/lib/entities";
 import {
   Select,
@@ -68,39 +58,6 @@ const TeamPage = () => {
               <Search />
             </Button>
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="icon">
-                <Filter className="h-4 w-4" />
-                <span className="sr-only">Filter</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-[200px]">
-              <DropdownMenuLabel>Filter by</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuGroup>
-                <DropdownMenuLabel className="text-xs">
-                  Status
-                </DropdownMenuLabel>
-                <DropdownMenuItem onClick={() => setStatusFilter("all")}>
-                  All
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => setStatusFilter(Status.ACTIVE)}
-                >
-                  Active
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setStatusFilter(Status.DRAFT)}>
-                  Draft
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => setStatusFilter(Status.DELETED)}
-                >
-                  Deleted
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
         </div>
         <Select
           value={statusFilter}
