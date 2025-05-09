@@ -1,0 +1,44 @@
+import { client } from "@/lib/axios";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
+import { QueryKey } from "@/lib/consts";
+
+export const useMutateUser = () => {
+  const queryClient = useQueryClient();
+
+  const editUser = async ({
+    name,
+    email,
+    profile_picture,
+  }: {
+    name: string;
+    email: string;
+    profile_picture: string;
+  }) => {
+    try {
+      await client.patch("/editUser", {
+        name,
+        email,
+        profile_picture,
+      });
+
+      toast.success("User updated successfully!");
+      queryClient.invalidateQueries({
+        queryKey: [QueryKey.GET_CURRENT_USER],
+      });
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "An unknown error occurred"
+      );
+    }
+  };
+
+  const editUserMutation = useMutation({
+    mutationFn: editUser,
+  });
+
+  return {
+    editUserMutation,
+  };
+};
