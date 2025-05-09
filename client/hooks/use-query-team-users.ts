@@ -17,5 +17,11 @@ export const useQueryTeamUsers = (teamId: string) => {
   return useQuery({
     queryKey: [QueryKey.GET_TEAM_USERS_BY_TEAM_ID, teamId],
     queryFn: getTeamUsers,
+    // refetchOnWindowFocus: false,
+    // refetchOnReconnect: false,
+    // refetchInterval: false,
+    // refetchIntervalInBackground: false,
+    // refetchOnMount: false,
+    // staleTime: Infinity,
   });
 };

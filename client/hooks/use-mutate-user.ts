@@ -27,6 +27,9 @@ export const useMutateUser = () => {
       queryClient.invalidateQueries({
         queryKey: [QueryKey.GET_CURRENT_USER],
       });
+      queryClient.invalidateQueries({
+        queryKey: [QueryKey.GET_TEAM_USERS_BY_TEAM_ID],
+      });
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : "An unknown error occurred"

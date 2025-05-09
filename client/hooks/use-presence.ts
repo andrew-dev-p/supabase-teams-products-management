@@ -1,13 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
 import { User } from "@/lib/entities";
-import { QueryKey } from "@/lib/consts";
+
+const supabase = createClient();
 
 export function usePresence(teamId: string, currentUser: User | null) {
   const queryClient = useQueryClient();
   const CHANNEL = `team-${teamId}`;
-  const supabase = createClient();
+
+  const [onlineIds, setOnlineIds] = useState<string[]>([]);
 
   useEffect(() => {
     if (!teamId || !currentUser?.id) return;
@@ -20,17 +22,7 @@ export function usePresence(teamId: string, currentUser: User | null) {
       .on("presence", { event: "sync" }, () => {
         const state = channel.presenceState();
         const onlineIds = Object.keys(state);
-
-        queryClient.setQueryData(
-          [QueryKey.GET_TEAM_USERS_BY_TEAM_ID, teamId],
-          (prev: User[]) => {
-            if (!prev) return prev;
-            return prev.map((user) => ({
-              ...user,
-              is_online: onlineIds.includes(user.id),
-            }));
-          }
-        );
+        setOnlineIds(onlineIds);
       })
       .subscribe(async (status) => {
         if (status === "SUBSCRIBED") {
@@ -44,5 +36,7 @@ export function usePresence(teamId: string, currentUser: User | null) {
     return () => {
       channel.unsubscribe();
     };
-  }, [teamId, currentUser, CHANNEL, queryClient, supabase]);
+  }, [teamId, currentUser?.id, currentUser?.name, queryClient, CHANNEL]);
+
+  return onlineIds;
 }

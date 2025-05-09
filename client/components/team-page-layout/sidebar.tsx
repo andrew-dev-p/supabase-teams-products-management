@@ -29,7 +29,7 @@ export function Sidebar({ team }: { team?: Team }) {
 
   const { data: currentUser } = useQueryCurrentUser();
 
-  usePresence(team?.id as string, currentUser);
+  const onlineIds = usePresence(team?.id as string, currentUser);
 
   if (!users || !team || !currentUser) {
     return null;
@@ -128,7 +128,7 @@ export function Sidebar({ team }: { team?: Team }) {
                 <span
                   className={cn(
                     "absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-background",
-                    user.is_online ? "bg-green-500" : "bg-gray-400"
+                    onlineIds.includes(user.id) ? "bg-green-500" : "bg-gray-400"
                   )}
                 />
               </div>
@@ -136,7 +136,7 @@ export function Sidebar({ team }: { team?: Team }) {
                 <div className="flex flex-col">
                   <span className="text-sm font-medium">{user.name}</span>
                   <span className="text-xs text-muted-foreground">
-                    {user.is_online ? "online" : "offline"}
+                    {onlineIds.includes(user.id) ? "online" : "offline"}
                   </span>
                 </div>
               )}

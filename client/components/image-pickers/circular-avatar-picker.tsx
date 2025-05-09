@@ -70,7 +70,7 @@ export function CircularAvatarPicker({
   return (
     <div className="flex flex-col items-center gap-4">
       <div
-        className={`relative rounded-full overflow-hidden flex items-center justify-center bg-white
+        className={`relative rounded-full flex items-center justify-center bg-white
           ${isDragging ? "ring-4 ring-primary" : ""}
           ${isLoading ? "opacity-70" : ""}`}
         style={{ width: `${size}px`, height: `${size}px` }}
@@ -84,12 +84,12 @@ export function CircularAvatarPicker({
               src={preview || "/placeholder.svg"}
               alt="Selected image"
               fill
-              className="object-cover"
+              className="object-cover rounded-full"
             />
             <button
               type="button"
               onClick={clearImage}
-              className="absolute top-2 right-2 bg-background/80 p-1 rounded-full hover:bg-background"
+              className="absolute top-2 right-2 p-1 rounded-full bg-white hover:bg-background"
               aria-label="Remove image"
             >
               <X className="h-4 w-4" />
