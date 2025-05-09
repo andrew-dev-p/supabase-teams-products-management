@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import React, { useState } from "react";
 import ProductsTable from "./products-table";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Pagination,
   PaginationContent,
@@ -80,51 +81,65 @@ const TeamPage = () => {
           </SelectContent>
         </Select>
       </div>
-      <div className="rounded-md border">
-        <ProductsTable
-          data={getProductsQuery.data?.products || []}
-          teamId={getTeamQuery.data?.id as string}
-        />
+      <div className="space-y-4">
+        {getProductsQuery.isPending ? (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="space-y-2">
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-4 w-1/2" />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <>
+            <div className="rounded-md border">
+              <ProductsTable
+                data={getProductsQuery.data?.products || []}
+                teamId={getTeamQuery.data?.id as string}
+              />
+            </div>
+            <Pagination className="mt-4">
+              <PaginationContent>
+                <PaginationItem>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    disabled={page === 1}
+                    onClick={() => setPage(page - 1)}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                </PaginationItem>
+                {Array.from(
+                  { length: getProductsQuery.data?.totalPages || 0 },
+                  (_, i) => i + 1
+                ).map((pageNumber) => (
+                  <PaginationItem key={pageNumber}>
+                    <Button
+                      variant={page === pageNumber ? "default" : "outline"}
+                      size="icon"
+                      onClick={() => setPage(pageNumber)}
+                    >
+                      {pageNumber}
+                    </Button>
+                  </PaginationItem>
+                ))}
+                <PaginationItem>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    disabled={page === (getProductsQuery.data?.totalPages || 1)}
+                    onClick={() => setPage(page + 1)}
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </>
+        )}
       </div>
-      {getProductsQuery.isPending && <>TODO: Skeleton</>}
-      <Pagination className="mt-4">
-        <PaginationContent>
-          <PaginationItem>
-            <Button
-              variant="outline"
-              size="icon"
-              disabled={page === 1}
-              onClick={() => setPage(page - 1)}
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-          </PaginationItem>
-          {Array.from(
-            { length: getProductsQuery.data?.totalPages || 0 },
-            (_, i) => i + 1
-          ).map((pageNumber) => (
-            <PaginationItem key={pageNumber}>
-              <Button
-                variant={page === pageNumber ? "default" : "outline"}
-                size="icon"
-                onClick={() => setPage(pageNumber)}
-              >
-                {pageNumber}
-              </Button>
-            </PaginationItem>
-          ))}
-          <PaginationItem>
-            <Button
-              variant="outline"
-              size="icon"
-              disabled={page === (getProductsQuery.data?.totalPages || 1)}
-              onClick={() => setPage(page + 1)}
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
     </TeamPageLayout>
   );
 };

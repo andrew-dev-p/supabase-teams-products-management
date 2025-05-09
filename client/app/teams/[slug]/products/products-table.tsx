@@ -13,7 +13,6 @@ import { statusToColorsMap } from "@/lib/utils";
 import { MoreHorizontal, Edit, Notebook, Check, Trash } from "lucide-react";
 import React from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { useMutateProducts } from "@/hooks/use-mutate-products";
@@ -92,14 +91,7 @@ const ProductsTable = ({
                   )}
                 </div>
               </TableCell>
-              <TableCell className="font-medium">
-                <Link
-                  href={`/products/${product.id}`}
-                  className="hover:underline"
-                >
-                  {product.title}
-                </Link>
-              </TableCell>
+              <TableCell className="font-medium">{product.title}</TableCell>
               <TableCell className="hidden max-w-[300px] truncate md:table-cell">
                 {product.description}
               </TableCell>
