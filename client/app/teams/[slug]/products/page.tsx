@@ -24,6 +24,7 @@ import {
   PaginationItem,
 } from "@/components/ui/pagination";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import AuthGuard from "@/guards/auth-guard";
 
 const TeamPage = () => {
   const [search, setSearch] = useState("");
@@ -144,4 +145,12 @@ const TeamPage = () => {
   );
 };
 
-export default TeamPage;
+const GuardedTeamPage = () => {
+  return (
+    <AuthGuard>
+      <TeamPage />
+    </AuthGuard>
+  );
+};
+
+export default GuardedTeamPage;

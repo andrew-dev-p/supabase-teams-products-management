@@ -53,7 +53,7 @@ export function CardStylePicker({
           {preview ? (
             <div className="relative w-full h-full">
               <Image
-                src={preview || "/placeholder.svg"}
+                src={preview}
                 alt="Selected image"
                 fill
                 className="object-cover"

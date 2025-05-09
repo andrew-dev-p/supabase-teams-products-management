@@ -117,10 +117,7 @@ export function Sidebar({ team }: { team?: Team }) {
             >
               <div className="relative">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage
-                    src={user.profile_picture || "/placeholder.svg"}
-                    alt={user.name}
-                  />
+                  <AvatarImage src={user.profile_picture} alt={user.name} />
                   <AvatarFallback>
                     {user.name
                       .split(" ")

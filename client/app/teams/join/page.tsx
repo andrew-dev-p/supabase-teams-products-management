@@ -25,6 +25,8 @@ import z from "zod";
 import { ArrowLeft, Loader } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useMutateTeams } from "@/hooks/use-mutate-teams";
+import TeamGuard from "@/guards/team-guard";
+import AuthGuard from "@/guards/auth-guard";
 
 const joinTeamSchema = z.object({
   slug: z
@@ -117,4 +119,14 @@ const JoinTeamPage = () => {
   );
 };
 
-export default JoinTeamPage;
+const GuardedJoinTeamPage = () => {
+  return (
+    <AuthGuard>
+      <TeamGuard>
+        <JoinTeamPage />
+      </TeamGuard>
+    </AuthGuard>
+  );
+};
+
+export default GuardedJoinTeamPage;

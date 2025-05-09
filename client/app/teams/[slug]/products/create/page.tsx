@@ -31,6 +31,7 @@ import z from "zod";
 import { CardStylePicker } from "@/components/image-pickers/card-style-picker";
 import { createClient } from "@/lib/supabase/client";
 import { useMutateProducts } from "@/hooks/use-mutate-products";
+import AuthGuard from "@/guards/auth-guard";
 
 const productSchema = z.object({
   title: z.string().min(2, "Title must be at least 2 characters"),
@@ -189,4 +190,12 @@ const CreateTeamProduct = () => {
   );
 };
 
-export default CreateTeamProduct;
+const GuardedCreateTeamProduct = () => {
+  return (
+    <AuthGuard>
+      <CreateTeamProduct />
+    </AuthGuard>
+  );
+};
+
+export default GuardedCreateTeamProduct;

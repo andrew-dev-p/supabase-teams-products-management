@@ -25,6 +25,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { ArrowLeft, Loader } from "lucide-react";
 import { useMutateTeams } from "@/hooks/use-mutate-teams";
+import AuthGuard from "@/guards/auth-guard";
+import TeamGuard from "@/guards/team-guard";
 
 const createTeamSchema = z.object({
   name: z.string().min(1, "Team name is required"),
@@ -39,7 +41,7 @@ const createTeamSchema = z.object({
 
 type CreateTeamSchema = z.infer<typeof createTeamSchema>;
 
-export default function CreateTeam() {
+const CreateTeam = () => {
   const router = useRouter();
 
   const form = useForm<CreateTeamSchema>({
@@ -149,4 +151,16 @@ export default function CreateTeam() {
       </Card>
     </div>
   );
-}
+};
+
+const GuardedCreateTeam = () => {
+  return (
+    <AuthGuard>
+      <TeamGuard>
+        <CreateTeam />
+      </TeamGuard>
+    </AuthGuard>
+  );
+};
+
+export default GuardedCreateTeam;
