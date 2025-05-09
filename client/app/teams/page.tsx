@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   Card,
@@ -9,6 +11,8 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { UserPlus, Users } from "lucide-react";
+import TeamGuard from "@/guards/team-guard";
+import AuthGuard from "@/guards/auth-guard";
 
 const TeamsPage = () => {
   return (
@@ -66,4 +70,14 @@ const TeamsPage = () => {
   );
 };
 
-export default TeamsPage;
+const GuardedTeamsPage = () => {
+  return (
+    <AuthGuard>
+      <TeamGuard>
+        <TeamsPage />
+      </TeamGuard>
+    </AuthGuard>
+  );
+};
+
+export default GuardedTeamsPage;
