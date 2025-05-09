@@ -4,10 +4,9 @@ import type React from "react";
 
 import { useState, useRef } from "react";
 import Image from "next/image";
-import { Crop, Upload, X, ZoomIn } from "lucide-react";
+import { Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Slider } from "@/components/ui/slider";
 
 interface CardStylePickerProps {
   onImageSelect: (file: File) => void;
@@ -20,8 +19,6 @@ export function CardStylePicker({
 }: CardStylePickerProps) {
   const [preview, setPreview] = useState<string>(defaultImage);
   const [isLoading, setIsLoading] = useState(false);
-  const [showCropTools, setShowCropTools] = useState(false);
-  const [zoom, setZoom] = useState([1]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,25 +35,15 @@ export function CardStylePicker({
       setPreview(reader.result as string);
       onImageSelect(file);
       setIsLoading(false);
-      setShowCropTools(true);
     };
     reader.readAsDataURL(file);
   };
 
   const clearImage = () => {
     setPreview("");
-    setShowCropTools(false);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
-  };
-
-  const handleZoomChange = (value: number[]) => {
-    setZoom(value);
-  };
-
-  const finishCropping = () => {
-    setShowCropTools(false);
   };
 
   return (
@@ -70,7 +57,6 @@ export function CardStylePicker({
                 alt="Selected image"
                 fill
                 className="object-cover"
-                style={{ transform: `scale(${zoom[0]})` }}
               />
               <button
                 onClick={clearImage}
@@ -108,21 +94,6 @@ export function CardStylePicker({
           className="sr-only"
           id="card-style-upload"
         />
-
-        {showCropTools && (
-          <div className="mt-4 space-y-4">
-            <div className="flex items-center gap-2">
-              <ZoomIn className="h-4 w-4 text-muted-foreground" />
-              <Slider
-                value={zoom}
-                onValueChange={handleZoomChange}
-                min={1}
-                max={3}
-                step={0.1}
-              />
-            </div>
-          </div>
-        )}
       </CardContent>
 
       <CardFooter className="flex justify-between">
@@ -134,16 +105,6 @@ export function CardStylePicker({
           >
             Select Image
           </Button>
-        ) : showCropTools ? (
-          <>
-            <Button type="button" variant="outline" onClick={clearImage}>
-              Cancel
-            </Button>
-            <Button type="button" onClick={finishCropping}>
-              <Crop className="h-4 w-4 mr-2" />
-              Apply Crop
-            </Button>
-          </>
         ) : (
           <Button
             type="button"
