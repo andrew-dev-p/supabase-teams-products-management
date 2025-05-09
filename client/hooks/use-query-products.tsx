@@ -7,18 +7,27 @@ import { Status } from "@/lib/entities";
 export const useQueryProducts = (
   teamId: string,
   search: string,
-  status: Status | "all"
+  status: Status | "all",
+  page: number,
+  perPage = 10
 ) => {
   return useQuery({
-    queryKey: [QueryKey.GET_PRODUCTS, teamId, { search, status }],
+    queryKey: [
+      QueryKey.GET_PRODUCTS,
+      teamId,
+      { search, status, page, perPage },
+    ],
     queryFn: async () => {
-      console.log("hook: ", search);
-
-      const { data } = await client.get<Product[]>("/getProducts", {
+      const { data } = await client.get<{
+        products: Product[];
+        totalPages: number;
+      }>("/getProducts", {
         params: {
           team_id: teamId,
           search,
           status: status === "all" ? undefined : status,
+          page,
+          per_page: perPage,
         },
       });
 

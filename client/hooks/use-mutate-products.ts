@@ -21,7 +21,7 @@ export const useMutateProducts = (teamId: string) => {
     slug: string;
   }) => {
     try {
-      const { data } = await client.post("/createProduct", {
+      await client.post("/createProduct", {
         product: {
           title,
           description,
@@ -31,7 +31,7 @@ export const useMutateProducts = (teamId: string) => {
       });
 
       toast.success("Product created successfully!");
-      router.push(`/teams/${slug}/products/${data.id}`);
+      router.push(`/teams/${slug}/products`);
       queryClient.invalidateQueries({
         queryKey: [QueryKey.GET_PRODUCTS, teamId],
       });

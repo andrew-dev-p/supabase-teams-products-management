@@ -17,11 +17,18 @@ import {
 } from "@/components/ui/select";
 import React, { useState } from "react";
 import ProductsTable from "./products-table";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+} from "@/components/ui/pagination";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const TeamPage = () => {
   const [search, setSearch] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<Status | "all">("all");
+  const [page, setPage] = useState(1);
 
   const params = useParams();
   const slug = params.slug;
@@ -31,10 +38,9 @@ const TeamPage = () => {
   const getProductsQuery = useQueryProducts(
     getTeamQuery.data?.id as string,
     searchQuery,
-    statusFilter
+    statusFilter,
+    page
   );
-
-  console.log("component: ", searchQuery);
 
   return (
     <TeamPageLayout team={getTeamQuery.data}>
@@ -76,11 +82,49 @@ const TeamPage = () => {
       </div>
       <div className="rounded-md border">
         <ProductsTable
-          data={getProductsQuery.data || []}
+          data={getProductsQuery.data?.products || []}
           teamId={getTeamQuery.data?.id as string}
         />
       </div>
       {getProductsQuery.isPending && <>TODO: Skeleton</>}
+      <Pagination className="mt-4">
+        <PaginationContent>
+          <PaginationItem>
+            <Button
+              variant="outline"
+              size="icon"
+              disabled={page === 1}
+              onClick={() => setPage(page - 1)}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+          </PaginationItem>
+          {Array.from(
+            { length: getProductsQuery.data?.totalPages || 0 },
+            (_, i) => i + 1
+          ).map((pageNumber) => (
+            <PaginationItem key={pageNumber}>
+              <Button
+                variant={page === pageNumber ? "default" : "outline"}
+                size="icon"
+                onClick={() => setPage(pageNumber)}
+              >
+                {pageNumber}
+              </Button>
+            </PaginationItem>
+          ))}
+          <PaginationItem>
+            <Button
+              variant="outline"
+              size="icon"
+              disabled={page === (getProductsQuery.data?.totalPages || 1)}
+              onClick={() => setPage(page + 1)}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </TeamPageLayout>
   );
 };
