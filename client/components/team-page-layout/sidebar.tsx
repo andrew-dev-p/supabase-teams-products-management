@@ -38,7 +38,7 @@ export function Sidebar({ team }: { team?: Team }) {
   return (
     <aside
       className={cn(
-        "rounded-3xl bg-[#BDE141] ml-2 mb-2 relative flex flex-col border-r transition-all duration-300",
+        "rounded-3xl bg-[#BDE141] ml-2 mb-2 relative flex flex-col border-r transition-all duration-300 border-b-4 border-primary",
         collapsed ? "w-16" : "w-64"
       )}
     >

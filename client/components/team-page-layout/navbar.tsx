@@ -24,7 +24,7 @@ export function Navbar({ team }: { team?: Team }) {
   }
 
   return (
-    <header className="rounded-3xl sticky top-2 mx-2 z-10 flex h-16 items-center gap-4 border-b bg-[#BDE141] px-4 md:px-6">
+    <header className="rounded-3xl sticky top-2 mx-2 z-10 flex h-16 items-center gap-4 border-b-4 border-primary bg-[#BDE141] px-4 md:px-6">
       <Link href="/" className="flex items-center gap-2 font-semibold">
         <Image src="/logo.png" alt="Logo" width={32} height={32} />
         <span className="text-xl text-[#5E9C0A] font-bold mb-1">

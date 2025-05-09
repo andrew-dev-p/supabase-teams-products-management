@@ -14,7 +14,7 @@ const TeamPageLayout = ({
         <Navbar team={team} />
         <div className="mt-4 flex flex-1 overflow-hidden">
           <Sidebar team={team} />
-          <main className="bg-[#BDE141] flex-1 overflow-y-auto rounded-3xl mx-2 mb-2.5 p-2 md:p-4">
+          <main className="bg-[#BDE141] flex-1 overflow-y-auto rounded-3xl mx-2 mb-2.5 p-2 md:p-4 border-b-4 border-primary">
             {children}
           </main>
         </div>
