@@ -105,7 +105,7 @@ const CreateTeam = () => {
                       <FormLabel htmlFor="slug">Team URL (optional)</FormLabel>
                       <div className="flex items-center">
                         <span className="text-sm text-muted-foreground mr-2">
-                          {process.env.NEXT_PUBLIC_APP_URL}/teams/
+                          /teams/
                         </span>
                         <FormControl>
                           <Input
