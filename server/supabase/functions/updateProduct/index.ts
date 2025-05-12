@@ -29,7 +29,7 @@ Deno.serve(async (req) => {
     return handleError("Missing product ID", 400);
   }
 
-  const { data: _productData, error: productError } = await supabase
+  const { data: productData, error: productError } = await supabase
     .from("products")
     .select("id")
     .eq("id", product.id)
@@ -37,6 +37,10 @@ Deno.serve(async (req) => {
 
   if (productError) {
     return handleError("Product not found", 404);
+  }
+
+  if (productData.status === "active") {
+    return handleError("You cannot update an active product", 400);
   }
 
   const { error: updateError } = await supabase

@@ -112,14 +112,16 @@ const ProductsTable = ({
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuGroup>
-                      <DropdownMenuItem
-                        onClick={() => {
-                          setEditDialogId(product.id);
-                        }}
-                      >
-                        <Edit className="mr-2 h-4 w-4" />
-                        Edit properties
-                      </DropdownMenuItem>
+                      {product.status !== Status.ACTIVE && (
+                        <DropdownMenuItem
+                          onClick={() => {
+                            setEditDialogId(product.id);
+                          }}
+                        >
+                          <Edit className="mr-2 h-4 w-4" />
+                          Edit properties
+                        </DropdownMenuItem>
+                      )}
                       {(product.status === Status.ACTIVE ||
                         product.status === Status.DELETED) && (
                         <DropdownMenuItem
