@@ -58,7 +58,6 @@ Deno.serve(async (req) => {
     query = query.eq("status", status);
   }
 
-  // First get the total count of items that match the query
   const { count: totalCount } = await supabase
     .from("products")
     .select("id", { count: "exact", head: true })
