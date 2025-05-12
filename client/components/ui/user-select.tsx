@@ -20,7 +20,7 @@ const UserSelect = ({
 
   return (
     <Select value={selectedUserId} onValueChange={setSelectedUserId}>
-      <SelectTrigger className="bg-white">
+      <SelectTrigger className="bg-background">
         <SelectValue placeholder="Select a user" />
       </SelectTrigger>
       <SelectContent>
