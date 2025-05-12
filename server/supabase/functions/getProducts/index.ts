@@ -1,14 +1,11 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js";
 import {
   handleResponse,
   handleOptionsRequest,
   handleError,
 } from "../_shared/cors.ts";
+import { createSupabaseClient } from "../_shared/supabase.ts";
 
-const supabase = createClient(
-  Deno.env.get("SUPABASE_URL")!,
-  Deno.env.get("SUPABASE_ANON_KEY")!
-);
+const supabase = createSupabaseClient();
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {

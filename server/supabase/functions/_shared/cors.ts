@@ -1,3 +1,5 @@
+import { Response } from "https://esm.sh/@supabase/supabase-js";
+
 export const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
