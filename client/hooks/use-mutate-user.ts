@@ -7,6 +7,34 @@ import { QueryKey } from "@/lib/consts";
 export const useMutateUser = () => {
   const queryClient = useQueryClient();
 
+  const createUser = async ({
+    name,
+    email,
+    profile_picture,
+  }: {
+    name: string;
+    email: string;
+    profile_picture: string;
+  }) => {
+    try {
+      await client.post("/createUser", {
+        name,
+        email,
+        profile_picture,
+      });
+
+      toast.success("User created successfully!");
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "An unknown error occurred"
+      );
+    }
+  };
+
+  const createUserMutation = useMutation({
+    mutationFn: createUser,
+  });
+
   const editUser = async ({
     name,
     email,
@@ -42,6 +70,7 @@ export const useMutateUser = () => {
   });
 
   return {
+    createUserMutation,
     editUserMutation,
   };
 };

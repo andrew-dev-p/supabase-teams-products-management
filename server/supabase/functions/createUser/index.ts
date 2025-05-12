@@ -5,52 +5,62 @@ const supabase = createClient(
   Deno.env.get("SUPABASE_ANON_KEY")!
 );
 
+// Set up CORS headers for all responses
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  "Content-Type": "application/json",
+};
+
+// Helper for consistent response creation
+const createResponse = (body: unknown, status: number) => {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: corsHeaders,
+  });
+};
+
 Deno.serve(async (req) => {
+  // Handle preflight OPTIONS request
   if (req.method === "OPTIONS") {
     return new Response(null, {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
-      },
+      headers: corsHeaders,
     });
+  }
+
+  // Only allow POST method
+  if (req.method !== "POST") {
+    return createResponse({ error: "Method not allowed" }, 405);
   }
 
   let payload;
   try {
     payload = await req.json();
   } catch {
-    return new Response("Invalid JSON", { status: 400 });
+    return createResponse({ error: "Invalid JSON" }, 400);
   }
 
-  const record = payload.record;
-
-  if (!record?.email || !record?.id) {
-    return new Response("Missing user data", { status: 400 });
+  if (!payload?.email || !payload?.userId) {
+    return createResponse({ error: "Missing user data" }, 400);
   }
-
-  const name = record.raw_user_meta_data?.name || "Anonymous";
 
   const { data, error } = await supabase
     .from("users")
-    .insert([{ id: record.id, email: record.email, name }])
+    .insert([
+      {
+        id: payload.userId,
+        email: payload.email,
+        name: payload.name,
+        profile_picture: payload.profile_picture,
+      },
+    ])
     .select()
     .single();
 
-  if (error)
-    return new Response(JSON.stringify(error), {
-      status: 400,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json",
-      },
-    });
+  if (error) {
+    return createResponse({ error: error.message }, 400);
+  }
 
-  return new Response(JSON.stringify(data), {
-    status: 200,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Content-Type": "application/json",
-    },
-  });
+  return createResponse(data, 200);
 });

@@ -14,7 +14,7 @@ export const useMutateTeams = () => {
       });
 
       toast.success("Team created successfully!");
-      router.push(`/teams/${data.slug}`);
+      router.push(`/teams/${data.slug}/products`);
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : "An unknown error occurred"
@@ -33,7 +33,7 @@ export const useMutateTeams = () => {
       });
 
       toast.success("Successfully joined team!");
-      router.push(`/teams/${slug}`);
+      router.push(`/teams/${slug}/products`);
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : "An unknown error occurred"

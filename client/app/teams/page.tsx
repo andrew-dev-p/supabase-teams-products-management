@@ -11,10 +11,55 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { UserPlus, Users } from "lucide-react";
-import TeamGuard from "@/guards/team-guard";
-import AuthGuard from "@/guards/auth-guard";
+import { useMutateUser } from "@/hooks/use-mutate-user";
+import { useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { client } from "@/lib/axios";
+import { User } from "@supabase/supabase-js";
 
 const TeamsPage = () => {
+  const supabase = createClient();
+  const { createUserMutation } = useMutateUser();
+
+  const [authUser, setAuthUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const getAuthUser = async () => {
+      const {
+        data: { user: authUser },
+      } = await supabase.auth.getUser();
+
+      setAuthUser(authUser);
+    };
+
+    getAuthUser();
+  }, [supabase.auth]);
+
+  useEffect(() => {
+    const getAuthUser = async () => {
+      if (authUser) {
+        let userFromDb;
+        let errorFromDb;
+        try {
+          const { data } = await client.get("/getCurrentUser");
+          userFromDb = data;
+        } catch (err) {
+          errorFromDb = err;
+        }
+
+        if (!userFromDb || errorFromDb) {
+          createUserMutation.mutate({
+            name: authUser?.user_metadata.name || "",
+            email: authUser?.email || "",
+            profile_picture: authUser?.user_metadata.avatar_url || "",
+          });
+        }
+      }
+    };
+
+    getAuthUser();
+  }, [createUserMutation, authUser]);
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="w-full max-w-3xl grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -70,14 +115,4 @@ const TeamsPage = () => {
   );
 };
 
-const GuardedTeamsPage = () => {
-  return (
-    <AuthGuard>
-      <TeamGuard>
-        <TeamsPage />
-      </TeamGuard>
-    </AuthGuard>
-  );
-};
-
-export default GuardedTeamsPage;
+export default TeamsPage;

@@ -131,11 +131,33 @@ export const useMutateAuth = () => {
     mutationFn: resetPassword,
   });
 
+  const OAuthSignIn = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/teams`,
+        },
+      });
+
+      if (error) throw error;
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "An unknown error occurred"
+      );
+    }
+  };
+
+  const OAuthSignInMutation = useMutation({
+    mutationFn: OAuthSignIn,
+  });
+
   return {
     signUpMutation,
     loginMutation,
     forgotPasswordMutation,
     resetPasswordMutation,
     logoutMutation,
+    OAuthSignInMutation,
   };
 };
