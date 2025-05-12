@@ -20,6 +20,7 @@ Deno.serve(async (req) => {
   const teamId = url.searchParams.get("team_id");
   const search = url.searchParams.get("search");
   const status = url.searchParams.get("status");
+  const created_by = url.searchParams.get("created_by");
   const page = parseInt(url.searchParams.get("page") || "1");
   const perPage = parseInt(url.searchParams.get("per_page") || "10");
 
@@ -75,6 +76,10 @@ Deno.serve(async (req) => {
 
   if (status) {
     query = query.eq("status", status);
+  }
+
+  if (created_by) {
+    query = query.eq("created_by", created_by);
   }
 
   query = query

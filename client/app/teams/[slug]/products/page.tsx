@@ -25,12 +25,18 @@ import {
 } from "@/components/ui/pagination";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import AuthGuard from "@/guards/auth-guard";
+import UserSelect from "@/components/ui/user-select";
 
 const TeamPage = () => {
   const [search, setSearch] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+
   const [statusFilter, setStatusFilter] = useState<Status | "all">("all");
+
+  const perPage = 10;
   const [page, setPage] = useState(1);
+
+  const [selectedUserId, setSelectedUserId] = useState("");
 
   const params = useParams();
   const slug = params.slug;
@@ -41,7 +47,9 @@ const TeamPage = () => {
     getTeamQuery.data?.id as string,
     searchQuery,
     statusFilter,
-    page
+    page,
+    perPage,
+    selectedUserId
   );
 
   return (
@@ -81,6 +89,11 @@ const TeamPage = () => {
             <SelectItem value={Status.DELETED}>Deleted</SelectItem>
           </SelectContent>
         </Select>
+        <UserSelect
+          teamId={getTeamQuery.data?.id as string}
+          selectedUserId={selectedUserId}
+          setSelectedUserId={setSelectedUserId}
+        />
       </div>
       <div className="space-y-4">
         {getProductsQuery.isPending ? (

@@ -9,13 +9,14 @@ export const useQueryProducts = (
   search: string,
   status: Status | "all",
   page: number,
-  perPage = 10
+  perPage = 10,
+  selectedUserId: string
 ) => {
   return useQuery({
     queryKey: [
       QueryKey.GET_PRODUCTS,
       teamId,
-      { search, status, page, perPage },
+      { search, status, page, perPage, selectedUserId },
     ],
     queryFn: async () => {
       const { data } = await client.get<{
@@ -28,6 +29,7 @@ export const useQueryProducts = (
           status: status === "all" ? undefined : status,
           page,
           per_page: perPage,
+          created_by: selectedUserId,
         },
       });
 
