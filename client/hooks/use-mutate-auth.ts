@@ -21,7 +21,7 @@ export const useMutateAuth = () => {
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/login`,
+          emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/login`,
           data: {
             name,
           },
@@ -74,7 +74,7 @@ export const useMutateAuth = () => {
   const forgotPassword = async ({ email }: { email: string }) => {
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password`,
+        redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/reset-password`,
       });
 
       if (error) throw error;
@@ -136,7 +136,7 @@ export const useMutateAuth = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/teams`,
+          redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/teams`,
         },
       });
 
