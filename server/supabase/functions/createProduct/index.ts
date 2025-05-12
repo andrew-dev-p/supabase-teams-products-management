@@ -38,6 +38,7 @@ Deno.serve(async (req) => {
         picture: product.picture,
         team_id: product.team_id,
         created_at: new Date().toISOString(),
+        created_by: payload.userId,
       },
     ])
     .select()
