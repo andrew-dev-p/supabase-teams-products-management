@@ -1,4 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js";
+import { handleOptionsRequest } from "../_shared/cors";
+import { handleError } from "../_shared/cors";
+import { handleResponse } from "../_shared/cors";
 
 const supabase = createClient(
   Deno.env.get("SUPABASE_URL")!,
@@ -7,30 +10,24 @@ const supabase = createClient(
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response(null, {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "PATCH, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
-      },
-    });
+    return handleOptionsRequest();
   }
 
   if (req.method !== "PATCH") {
-    return new Response("Method Not Allowed", { status: 405 });
+    return handleError("Method Not Allowed", 405);
   }
 
   let payload;
   try {
     payload = await req.json();
   } catch {
-    return new Response("Invalid JSON", { status: 400 });
+    return handleError("Invalid JSON", 400);
   }
 
   const product = payload.product;
 
   if (!product?.id) {
-    return new Response("Missing product ID", { status: 400 });
+    return handleError("Missing product ID", 400);
   }
 
   const { data: _productData, error: productError } = await supabase
@@ -40,13 +37,7 @@ Deno.serve(async (req) => {
     .single();
 
   if (productError) {
-    return new Response(JSON.stringify({ error: "Product not found" }), {
-      status: 404,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json",
-      },
-    });
+    return handleError("Product not found", 404);
   }
 
   const { error: updateError } = await supabase
@@ -56,25 +47,16 @@ Deno.serve(async (req) => {
       description: product.description,
       picture: product.picture,
       status: product.status,
-      deleted_at: product.status === 'active' || product.status === 'draft' ? null : undefined,
+      deleted_at:
+        product.status === "active" || product.status === "draft"
+          ? null
+          : undefined,
     })
     .eq("id", product.id);
 
   if (updateError) {
-    return new Response(JSON.stringify({ error: "Failed to update product" }), {
-      status: 500,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json",
-      },
-    });
+    return handleError("Failed to update product", 500);
   }
 
-  return new Response(JSON.stringify({ success: true }), {
-    status: 200,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Content-Type": "application/json",
-    },
-  });
+  return handleResponse({ success: true }, 200);
 });

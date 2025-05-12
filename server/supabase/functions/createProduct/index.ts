@@ -1,4 +1,9 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js";
+import {
+  handleOptionsRequest,
+  handleError,
+  handleResponse,
+} from "../_shared/cors.ts";
 
 const supabase = createClient(
   Deno.env.get("SUPABASE_URL")!,
@@ -7,26 +12,24 @@ const supabase = createClient(
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response(null, {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
-      },
-    });
+    return handleOptionsRequest();
+  }
+
+  if (req.method !== "POST") {
+    return handleError("Method not allowed", 405);
   }
 
   let payload;
   try {
     payload = await req.json();
   } catch {
-    return new Response("Invalid JSON", { status: 400 });
+    return handleError("Invalid JSON", 400);
   }
 
   const product = payload.product;
 
   if (!product?.title || !product?.description || !product?.team_id) {
-    return new Response("Missing product data", { status: 400 });
+    return handleError("Missing product data", 400);
   }
 
   const { data, error } = await supabase
@@ -43,20 +46,7 @@ Deno.serve(async (req) => {
     .select()
     .single();
 
-  if (error)
-    return new Response(JSON.stringify(error), {
-      status: 400,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json",
-      },
-    });
+  if (error) return handleError(error.message, 400);
 
-  return new Response(JSON.stringify(data), {
-    status: 200,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Content-Type": "application/json",
-    },
-  });
+  return handleResponse(data, 200);
 });

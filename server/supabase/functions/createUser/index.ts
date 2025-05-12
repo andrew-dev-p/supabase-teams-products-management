@@ -1,48 +1,33 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js";
+import {
+  handleOptionsRequest,
+  handleError,
+  handleResponse,
+} from "../_shared/cors.ts";
 
 const supabase = createClient(
   Deno.env.get("SUPABASE_URL")!,
   Deno.env.get("SUPABASE_ANON_KEY")!
 );
 
-// Set up CORS headers for all responses
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization",
-  "Content-Type": "application/json",
-};
-
-// Helper for consistent response creation
-const createResponse = (body: unknown, status: number) => {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: corsHeaders,
-  });
-};
-
 Deno.serve(async (req) => {
-  // Handle preflight OPTIONS request
   if (req.method === "OPTIONS") {
-    return new Response(null, {
-      headers: corsHeaders,
-    });
+    return handleOptionsRequest();
   }
 
-  // Only allow POST method
   if (req.method !== "POST") {
-    return createResponse({ error: "Method not allowed" }, 405);
+    return handleError("Method not allowed", 405);
   }
 
   let payload;
   try {
     payload = await req.json();
   } catch {
-    return createResponse({ error: "Invalid JSON" }, 400);
+    return handleError("Invalid JSON", 400);
   }
 
   if (!payload?.email || !payload?.userId) {
-    return createResponse({ error: "Missing user data" }, 400);
+    return handleError("Missing user data", 400);
   }
 
   const { data, error } = await supabase
@@ -59,8 +44,8 @@ Deno.serve(async (req) => {
     .single();
 
   if (error) {
-    return createResponse({ error: error.message }, 400);
+    return handleError(error.message, 400);
   }
 
-  return createResponse(data, 200);
+  return handleResponse(data, 200);
 });

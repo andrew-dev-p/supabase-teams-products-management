@@ -1,4 +1,9 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js";
+import {
+  handleResponse,
+  handleOptionsRequest,
+  handleError,
+} from "../_shared/cors.ts";
 
 const supabase = createClient(
   Deno.env.get("SUPABASE_URL")!,
@@ -7,17 +12,11 @@ const supabase = createClient(
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response(null, {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
-      },
-    });
+    return handleOptionsRequest();
   }
 
   if (req.method !== "GET") {
-    return new Response("Method not allowed", { status: 405 });
+    return handleError("Method not allowed", 405);
   }
 
   const url = new URL(req.url);
@@ -28,15 +27,15 @@ Deno.serve(async (req) => {
   const perPage = parseInt(url.searchParams.get("per_page") || "10");
 
   if (!teamId) {
-    return new Response("Missing team_id parameter", { status: 400 });
+    return handleError("Missing team_id parameter", 400);
   }
 
   if (isNaN(page) || page < 1) {
-    return new Response("Invalid page parameter", { status: 400 });
+    return handleError("Invalid page parameter", 400);
   }
 
   if (isNaN(perPage) || perPage < 1) {
-    return new Response("Invalid per_page parameter", { status: 400 });
+    return handleError("Invalid per_page parameter", 400);
   }
 
   let query = supabase
@@ -69,7 +68,7 @@ Deno.serve(async (req) => {
     .eq("team_id", teamId);
 
   if (totalCount === null) {
-    return new Response("Failed to get total count", { status: 500 });
+    return handleError("Failed to get total count", 500);
   }
 
   const totalPages = Math.ceil(totalCount / perPage);
@@ -89,26 +88,14 @@ Deno.serve(async (req) => {
   const { data: products, error } = await query;
 
   if (error) {
-    return new Response(JSON.stringify(error), {
-      status: 400,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json",
-      },
-    });
+    return handleError(error.message, 400);
   }
 
-  return new Response(
-    JSON.stringify({
+  return handleResponse(
+    {
       products,
       totalPages,
-    }),
-    {
-      status: 200,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json",
-      },
-    }
+    },
+    200
   );
 });

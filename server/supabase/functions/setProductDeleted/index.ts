@@ -1,4 +1,9 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js";
+import {
+  handleOptionsRequest,
+  handleError,
+  handleResponse,
+} from "../_shared/cors.ts";
 
 const supabase = createClient(
   Deno.env.get("SUPABASE_URL")!,
@@ -7,30 +12,18 @@ const supabase = createClient(
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response(null, {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
-      },
-    });
+    return handleOptionsRequest();
   }
 
   if (req.method !== "POST") {
-    return new Response("Method not allowed", { status: 405 });
+    return handleError("Method not allowed", 405);
   }
 
   try {
     const { productId } = await req.json();
 
     if (!productId) {
-      return new Response(JSON.stringify({ error: "Missing productId" }), {
-        status: 400,
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Content-Type": "application/json",
-        },
-      });
+      return handleError("Missing productId", 400);
     }
 
     const { error } = await supabase
@@ -44,29 +37,11 @@ Deno.serve(async (req) => {
       .eq("id", productId);
 
     if (error) {
-      return new Response(JSON.stringify(error), {
-        status: 400,
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Content-Type": "application/json",
-        },
-      });
+      return handleError(error.message, 400);
     }
 
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json",
-      },
-    });
+    return handleResponse({ success: true }, 200);
   } catch (error) {
-    return new Response(JSON.stringify(error), {
-      status: 400,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json",
-      },
-    });
+    return handleError(error.message, 400);
   }
 });

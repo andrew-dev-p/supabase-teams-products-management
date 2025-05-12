@@ -1,4 +1,9 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js";
+import {
+  handleOptionsRequest,
+  handleError,
+  handleResponse,
+} from "../_shared/cors.ts";
 
 const supabase = createClient(
   Deno.env.get("SUPABASE_URL")!,
@@ -7,17 +12,11 @@ const supabase = createClient(
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response(null, {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
-      },
-    });
+    return handleOptionsRequest();
   }
 
   if (req.method !== "GET") {
-    return new Response("Method not allowed", { status: 405 });
+    return handleError("Method not allowed", 405);
   }
 
   try {
@@ -28,32 +27,11 @@ Deno.serve(async (req) => {
       .lte("deleted_at", new Date().toISOString());
 
     if (deleteError) {
-      return new Response(
-        JSON.stringify({ error: "Failed to delete products" }),
-        {
-          status: 500,
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      return handleError("Failed to delete products", 500);
     }
 
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json",
-      },
-    });
+    return handleResponse({ success: true }, 200);
   } catch (error) {
-    return new Response(JSON.stringify({ error: error }), {
-      status: 500,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json",
-      },
-    });
+    return handleError(error.message, 500);
   }
 });
